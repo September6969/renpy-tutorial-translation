@@ -1,11 +1,11 @@
 ---
 name: renpy-tutorial-translation
-description: Follow the specific local tutorial "Renpy游戏翻译教程V2.0.docx" for Ren'Py game translation work. Use when Codex is asked to translate, migrate, repair, test, package, or make a language patch for a Ren'Py game according to that tutorial, especially tasks involving game/tl/<language> files, old/new translation strings, translate blocks, language switching, fonts/styles, extracted strings, advanced zzz.rpy patches, or label overrides.
+description: Follow the bundled tutorial "Renpy游戏翻译教程V2.0.docx" for Ren'Py game translation work. Use when Codex is asked to translate, migrate, repair, test, package, or make a language patch for a Ren'Py game according to that tutorial, especially tasks involving game/tl/<language> files, old/new translation strings, translate blocks, language switching, fonts/styles, extracted strings, advanced zzz.rpy patches, or label overrides.
 ---
 
 # Ren'Py Tutorial Translation
 
-Use this skill as an execution checklist for the local tutorial, not as a project-specific style guide. The source tutorial is `D:/download/Renpy游戏翻译教程V2.0.docx`; read it directly when exact wording or examples matter. For a compact index, see [tutorial-notes.md](references/tutorial-notes.md).
+Use this skill as an execution checklist for the bundled tutorial, not as a project-specific style guide. Read [Renpy游戏翻译教程V2.0.docx](references/Renpy游戏翻译教程V2.0.docx) directly when exact wording or examples matter. For a compact index, see [tutorial-notes.md](references/tutorial-notes.md).
 
 ## Operating Rules
 

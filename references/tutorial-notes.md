@@ -1,6 +1,6 @@
 # Tutorial Notes
 
-This is a compact operational index for `D:/download/Renpy游戏翻译教程V2.0.docx`. It summarizes the tutorial's technical workflow without adding project-specific preferences.
+This is a compact operational index for [Renpy游戏翻译教程V2.0.docx](Renpy游戏翻译教程V2.0.docx). It summarizes the tutorial's technical workflow without adding project-specific preferences.
 
 ## Ten-Step Route
 
