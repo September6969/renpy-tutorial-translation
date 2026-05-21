@@ -1,0 +1,4 @@
+interface:
+  display_name: "RenPy Tutorial Translation"
+  short_description: "Follow the provided RenPy translation tutorial."
+  default_prompt: "Use $renpy-tutorial-translation to translate or patch a RenPy game following the tutorial."
