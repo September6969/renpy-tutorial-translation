@@ -1,3 +1,5 @@
+[中文](README_zh.md) | [English](README.md)
+
 # RenPy Tutorial Translation Skill
 
 Codex skill for working on Ren'Py game translations according to the bundled Chinese tutorial:
