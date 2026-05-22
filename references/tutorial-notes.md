@@ -46,6 +46,8 @@ Dialogue block translations are tied to label and hash. String-table translation
 
 Menu captions are also exact string matches. Preserve the original `old` value exactly, including spaces, tags, suffixes, and condition text. If a custom screen strips a display marker before rendering, verify whether the stripped text exactly matches another translated `old`; otherwise translate the marked variant too.
 
+Official docs addition: Ren'Py can distinguish otherwise identical visible strings with the invisible `{#...}` text tag. Use this when the source/template can be adjusted and one visible string needs multiple translations.
+
 ## Updates and Existing Translations
 
 For a game update:
@@ -92,7 +94,7 @@ Use these checks from Chapter 3:
 - Image text: translate image assets and mirror the original path structure.
 - Same source, different meaning: one `old` value gives one global `new`, so solve context collisions by extracting more specific strings or using patch techniques.
 - Menu exact-match: if a menu option stays in the source language, compare the runtime caption to the `old` string exactly, including spaces and text tags. Add the missing exact `old`/`new` entry if no existing base string covers it.
-- Interpolation: translate variable values and use translation-aware interpolation such as `[variable!t]` for ordinary variables when needed.
+- Interpolation: translate variable values and use translation-aware interpolation such as `[variable!t]` for ordinary variables when needed. Use `[variable!ti]` when the translated substitution itself contains interpolation that must be evaluated.
 - Grammar consistency: put conditional Ren'Py code in translation blocks when variable values require different sentence forms.
 - Concatenated strings: use `__()` around translatable fragments or isolate source changes through a patch/label override.
 
@@ -101,8 +103,19 @@ Use these checks from Chapter 3:
 The tutorial calls these final tools and warns about side effects:
 
 1. `__()` marks text for immediate translation when stored in variables. Use carefully because stored translated values can affect later display or logic.
-2. `config.replace_text` performs late display-time replacement. Keep replacements specific and avoid broad substitutions that might affect already translated text.
-3. `preferences.language` checks can limit replacements or source-side custom code to the target language.
+2. `___()` immediately translates a string and supports interpolation from the caller's scope. It can double-translate if the displayed result also matches a string translation.
+3. `renpy.translate_string()` directly translates a string but does not add it to generated translation templates.
+4. `config.replace_text` performs late display-time replacement. Keep replacements specific and avoid broad substitutions that might affect already translated text.
+5. `preferences.language` checks can limit replacements or source-side custom code to the target language.
+
+## Official Translation Features
+
+- File and image translations: place translated assets under `game/tl/<language>/` using the same path as the original asset under `game/`.
+- Style translations: use `translate <language> style <style_name>:` for language-specific style changes.
+- GUI variable/font changes: use `translate <language> python:` for language-specific variables such as GUI fonts when this is cleaner than overriding the whole screen.
+- Deferred translation loading: `config.defer_tl_scripts = True` can reduce load time in large projects, but translation scripts that define screens or labels cannot be deferred.
+- Translation info: Ren'Py exposes translation identifier/source information for debugging displayed text and mapping it back to the generated translation files.
+- `_p()` can normalize multi-line paragraph strings and can be used in `new _p("""...""")` for cleaner string translations with paragraph breaks.
 
 ## Advanced Patch Pattern
 
@@ -132,6 +145,7 @@ When overriding a label:
 - Rename the copied label.
 - Map original to replacement with `config.label_overrides`.
 - Update affected dialogue translation block identifiers by changing only the label-name prefix.
+- If source edits are coordinated with the game source, a say-statement `id` clause can preserve an existing translation identifier after a minor source text change, and `label ... hide` can prevent a helper label from affecting generated translation identifiers.
 - If execution reaches the label by fall-through instead of `call` or `jump`, override the previous label and add an explicit jump.
 
 ## Packaging Notes

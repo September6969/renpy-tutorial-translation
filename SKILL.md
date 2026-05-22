@@ -34,6 +34,7 @@ Use this skill as an execution checklist for the bundled tutorial, not as a proj
    - Dialogue blocks use `translate <language> <label>_<hash>:`. Fill only the translated dialogue line; leave surrounding Ren'Py code intact.
    - Menu/UI/variable strings use `translate <language> strings:` with `old` and `new`. Never change `old`; write the translation only in `new`.
    - Identical `old` strings share one translation globally, so check context when a short word has multiple meanings.
+   - When identical source strings need different translations, prefer Ren'Py's invisible `{#...}` text tag in the source/template when that is available; Ren'Py treats those strings as distinct for translation while displaying the same visible text.
    - Treat menu option captions as exact-match strings. Source menu entries can include informal tags, state suffixes, text-size tags, or condition markers; preserve the exact `old` value and provide a matching translated `new` for every runtime-visible variant that will not be covered by an exact equivalent base string.
 
 4. Find strings Ren'Py may not extract.
@@ -54,11 +55,14 @@ Use this skill as an execution checklist for the bundled tutorial, not as a proj
    - Put default language, UI style fixes, replacement functions, and screen overrides here when possible.
    - Use `define config.default_language = "<language>"` to set the first-launch default language. Use `config.language` only when the intent is to force a language every run.
    - Use `preferences.language` checks to limit risky visual or text replacement changes to the target language.
+   - Prefer official language-scoped mechanisms where they fit: `translate <language> python:` for GUI variables, `translate <language> style <style_name>:` for style changes, and mirrored files under `game/tl/<language>/...` for translated images or assets.
+   - Be careful with `config.defer_tl_scripts = True`. Deferred translation loading can improve startup time in large games, but translation files that define screens or labels cannot be deferred safely.
 
 7. Use label overrides only when needed.
    - Copy the complete original label into the patch file, rename it, and map it with `define config.label_overrides = {"original": "replacement"}`.
    - Update affected translated dialogue block identifiers by replacing only the label-name part, not the hash.
    - Remember old/new string translations are label-independent, but dialogue block translations include the label name.
+   - When source edits are coordinated with the game source, prefer Ren'Py's say-statement `id` clause to keep an existing translation identifier after small source text fixes, and use `label ... hide` for labels that should not affect translation generation.
    - If the original flow reaches a label by natural fall-through rather than `call` or `jump`, the tutorial notes that overriding the previous label and adding an explicit `jump` may be required.
 
 8. Package according to patch type.
@@ -75,13 +79,16 @@ Use this skill as an execution checklist for the bundled tutorial, not as a proj
 - Image text: translate image assets when text is baked into images. Preserve the original path structure in the patch.
 - Identical strings with different meanings: Ren'Py old/new string translation is global by exact `old` value, so inspect context and use source extraction or overrides when one translation cannot fit all uses.
 - Menu exact-match gaps: if an option remains untranslated, compare the original runtime caption against the generated `old` string byte-for-byte, including spaces, text tags, and state markers. Add or correct the exact `old`/`new` entry rather than normalizing the original caption.
-- Variables and interpolation: translate the variable source if it is a translatable string. For ordinary variables whose values must be translated at display time, use translation-aware interpolation such as `[variable!t]`; role/name variables may behave differently depending on how `Character(...)` is defined.
+- Variables and interpolation: translate the variable source if it is a translatable string. For ordinary variables whose values must be translated at display time, use translation-aware interpolation such as `[variable!t]`; use `[variable!ti]` when the translated value itself needs an additional interpolation pass. Role/name variables may behave differently depending on how `Character(...)` is defined.
 - Grammar-dependent translations: dialogue translations can contain Ren'Py `if`/`else` code when a variable value changes the correct translated sentence. Preserve indentation and syntax exactly.
 - Concatenated strings: strings built with Python concatenation may not be extractable as complete old/new strings. The tutorial suggests `__()` for translatable parts, `[variable!t]` where appropriate, and patch/label override techniques when source changes must be isolated.
 - Last-resort replacement: `config.replace_text` can replace display text immediately before rendering, but it can also affect already translated text. Restrict it narrowly and combine it with a target-language check when possible.
+- Immediate translation helpers: `_()` marks a string for translation, `__()` immediately translates it when evaluated, `___()` can translate with interpolation, and `renpy.translate_string()` translates a string directly without adding it to generated string templates. Treat immediate helpers as risky when the translated value is stored or may be translated again at display time.
+- Multi-line translatable strings: `_p()` can normalize an indented multi-line string and can also be used in `new _p("""...""")` when preserving paragraph structure is cleaner than manual `\n` handling.
 
 ## Validation
 
 - Run Ren'Py lint/compile when available.
 - Start the game and test at least menus, preferences/language switching, saves, representative dialogue, choices, text overflow, fonts, and any overridden labels/screens.
 - If the game fails to launch, inspect `traceback.txt` and `errors.txt` first; if text spills out, inspect `text_overflow.txt`.
+- Enable or inspect translation info when debugging a specific displayed line; Ren'Py exposes current translation identifiers and source info through its translation info screen/API.
