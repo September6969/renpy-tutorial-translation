@@ -12,10 +12,20 @@ Use this skill as an execution checklist for the bundled tutorial, not as a proj
 - Treat `game/tl/<language>/` as the primary work area for translation.
 - Avoid editing original source scripts when the tutorial provides a translation-file or advanced-patch solution.
 - Preserve Ren'Py syntax exactly: indentation with spaces, balanced quotes, text tags, interpolation, and `old` strings.
+- Translate for exact runtime behavior, not just visible wording. Menu captions, string-table `old` values, tags, suffixes, spaces, interpolation markers, and custom screen transformations all affect matching.
 - On Windows, avoid write methods that can corrupt non-ASCII text through the active PowerShell code page. Prefer `apply_patch`, UTF-8-aware editors, or scripts that explicitly read/write `encoding="utf-8"`. After bulk edits, scan for mojibake, replacement characters, and placeholder damage such as `????`.
 - Do not delete original `.rpyc` files; the tutorial warns this can break AST-based translation and old saves.
 - When source edits are unavoidable, prefer putting overrides in a translation-folder patch file as described in the advanced patch section.
 - Validate with the game's Ren'Py executable or SDK after changes. Check `errors.txt`, `traceback.txt`, and `text_overflow.txt` when behavior or layout is wrong.
+
+## Translation Standard
+
+- Keep `old` exact. Never normalize punctuation, spaces, tags, or suffixes inside `old` to make matching easier.
+- Keep Ren'Py markup structurally valid. Preserve and balance text tags, interpolation markers, escapes, and Python/Ren'Py code around translated text.
+- Translate every runtime-visible path. For menu options, check enabled, disabled, conditional, tagged, and screen-transformed variants rather than assuming one visible caption covers all cases.
+- Use explicit disambiguation when one visible source string needs multiple meanings. A `{#...}` text tag is the standard invisible way to distinguish otherwise identical visible strings when source/template edits are available.
+- Prefer language-scoped overrides over global source changes. Use translation files, `translate <language> python`, `translate <language> style`, mirrored `game/tl/<language>/...` assets, or an advanced patch file before replacing original scripts.
+- Treat immediate translation helpers (`__()`, `___()`, `renpy.translate_string()`) and broad `config.replace_text` replacements as last-resort tools. Verify they do not store translated values into game logic or double-translate later.
 
 ## Workflow
 
@@ -34,7 +44,7 @@ Use this skill as an execution checklist for the bundled tutorial, not as a proj
    - Dialogue blocks use `translate <language> <label>_<hash>:`. Fill only the translated dialogue line; leave surrounding Ren'Py code intact.
    - Menu/UI/variable strings use `translate <language> strings:` with `old` and `new`. Never change `old`; write the translation only in `new`.
    - Identical `old` strings share one translation globally, so check context when a short word has multiple meanings.
-   - When identical source strings need different translations, prefer Ren'Py's invisible `{#...}` text tag in the source/template when that is available; Ren'Py treats those strings as distinct for translation while displaying the same visible text.
+   - When identical source strings need different translations, use an explicit disambiguation mechanism such as Ren'Py's invisible `{#...}` text tag when source/template edits are available.
    - Treat menu option captions as exact-match strings. Source menu entries can include informal tags, state suffixes, text-size tags, or condition markers; preserve the exact `old` value and provide a matching translated `new` for every runtime-visible variant that will not be covered by an exact equivalent base string.
 
 4. Find strings Ren'Py may not extract.
@@ -55,7 +65,7 @@ Use this skill as an execution checklist for the bundled tutorial, not as a proj
    - Put default language, UI style fixes, replacement functions, and screen overrides here when possible.
    - Use `define config.default_language = "<language>"` to set the first-launch default language. Use `config.language` only when the intent is to force a language every run.
    - Use `preferences.language` checks to limit risky visual or text replacement changes to the target language.
-   - Prefer official language-scoped mechanisms where they fit: `translate <language> python:` for GUI variables, `translate <language> style <style_name>:` for style changes, and mirrored files under `game/tl/<language>/...` for translated images or assets.
+   - Prefer language-scoped mechanisms where they fit: `translate <language> python:` for GUI variables, `translate <language> style <style_name>:` for style changes, and mirrored files under `game/tl/<language>/...` for translated images or assets.
    - Be careful with `config.defer_tl_scripts = True`. Deferred translation loading can improve startup time in large games, but translation files that define screens or labels cannot be deferred safely.
 
 7. Use label overrides only when needed.

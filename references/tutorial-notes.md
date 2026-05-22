@@ -46,7 +46,7 @@ Dialogue block translations are tied to label and hash. String-table translation
 
 Menu captions are also exact string matches. Preserve the original `old` value exactly, including spaces, tags, suffixes, and condition text. If a custom screen strips a display marker before rendering, verify whether the stripped text exactly matches another translated `old`; otherwise translate the marked variant too.
 
-Official docs addition: Ren'Py can distinguish otherwise identical visible strings with the invisible `{#...}` text tag. Use this when the source/template can be adjusted and one visible string needs multiple translations.
+Disambiguation: Ren'Py can distinguish otherwise identical visible strings with the invisible `{#...}` text tag. Use this when the source/template can be adjusted and one visible string needs multiple translations.
 
 ## Updates and Existing Translations
 
@@ -108,7 +108,9 @@ The tutorial calls these final tools and warns about side effects:
 4. `config.replace_text` performs late display-time replacement. Keep replacements specific and avoid broad substitutions that might affect already translated text.
 5. `preferences.language` checks can limit replacements or source-side custom code to the target language.
 
-## Official Translation Features
+## Standardized Ren'Py Mechanisms
+
+Use these mechanisms as the normal form when they fit the translation problem:
 
 - File and image translations: place translated assets under `game/tl/<language>/` using the same path as the original asset under `game/`.
 - Style translations: use `translate <language> style <style_name>:` for language-specific style changes.

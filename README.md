@@ -12,10 +12,11 @@ Codex skill for working on Ren'Py game translations according to the bundled Chi
 - Generating and updating Ren'Py translation files.
 - Working with `translate <language> ...` dialogue blocks.
 - Working with `translate <language> strings`, `old`, and `new`.
+- Keeping exact-match translation strings, menu captions, tags, interpolation, and UTF-8 text safe.
 - Finding strings Ren'Py may not extract automatically.
 - Adding language switching.
 - Fixing common translation issues such as overflow, missing glyphs, image text, interpolation, and concatenated strings.
-- Creating basic and advanced translation patches, including `zzz.rpy`, `init offset`, and label overrides.
+- Creating basic and advanced translation patches, including `zzz.rpy`, `init offset`, language-scoped style/python overrides, asset replacement, and label overrides.
 
 ## Install
 
