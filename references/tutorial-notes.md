@@ -22,6 +22,7 @@ This is a compact operational index for [Renpy游戏翻译教程V2.0.docx](Renpy
 - Do not delete original `.rpyc` files.
 - Ren'Py language identifiers are case-sensitive.
 - Any change to the original dialogue text can change its translation hash.
+- On Windows, write translation files through UTF-8-safe tools. PowerShell's active code page can corrupt non-ASCII text if a command writes text without explicit UTF-8 handling.
 
 ## Translation Forms
 
@@ -43,6 +44,8 @@ translate chinese strings:
 
 Dialogue block translations are tied to label and hash. String-table translations are direct `old` to `new` replacements and may apply globally to identical source strings.
 
+Menu captions are also exact string matches. Preserve the original `old` value exactly, including spaces, tags, suffixes, and condition text. If a custom screen strips a display marker before rendering, verify whether the stripped text exactly matches another translated `old`; otherwise translate the marked variant too.
+
 ## Updates and Existing Translations
 
 For a game update:
@@ -63,6 +66,7 @@ For translating from an existing translation:
 
 Search scripts for strings in:
 
+- `menu:` option captions
 - `Character("...")`
 - `text "..."`
 - `textbutton "..."`
@@ -75,15 +79,19 @@ Search scripts for strings in:
 
 The tutorial gives two routes: mark strings with `_()` then regenerate translations, or manually add exact `old`/`new` entries.
 
+For menus, do not assume generated translation files are complete enough. Check the original `menu:` blocks and confirm every original caption has an exact-match translation path after all custom tags and runtime screen transformations are considered.
+
 ## Troubleshooting Coverage
 
 Use these checks from Chapter 3:
 
 - Errors: read `errors.txt` for generation/startup problems and `traceback.txt` for runtime errors. Look for missing quotes, tabs, bad indentation, broken `{}` text tags, bad variables, or altered special symbols.
+- Encoding: if a bulk edit introduces mojibake, `????`, broken Chinese, or damaged tags, restore the affected strings and redo the edit with an explicit UTF-8 write path.
 - Overflow: shorten text, split one source line into several translated dialogue lines, or adjust style/textbox settings.
 - Fonts: use a font that supports the target language, preferably via style overrides in an advanced patch instead of changing original files for every language.
 - Image text: translate image assets and mirror the original path structure.
 - Same source, different meaning: one `old` value gives one global `new`, so solve context collisions by extracting more specific strings or using patch techniques.
+- Menu exact-match: if a menu option stays in the source language, compare the runtime caption to the `old` string exactly, including spaces and text tags. Add the missing exact `old`/`new` entry if no existing base string covers it.
 - Interpolation: translate variable values and use translation-aware interpolation such as `[variable!t]` for ordinary variables when needed.
 - Grammar consistency: put conditional Ren'Py code in translation blocks when variable values require different sentence forms.
 - Concatenated strings: use `__()` around translatable fragments or isolate source changes through a patch/label override.
